@@ -1,5 +1,7 @@
+from typing import List
 import click
 import platform
+from etae.utils.anki_utils import invoke
 from etae.utils.message_utils import format_config_message
 
 from etae.utils.utils import get_config_file, set_config_file
@@ -44,3 +46,39 @@ def set_config(ctx):
             is_finished = True
             set_config_file(ctx.obj["system"], login, password)
     click.echo("Config setup finished!")
+
+
+@cli.command(help="Send your Anki data to ETAE.")
+@click.pass_context
+def send_anki_data(ctx):
+    current_system: str = ctx.obj["system"]
+    config = get_config_file(current_system)
+    if config is None:
+        click.echo("Config file not found, please set it up first")
+        return
+    deck_result: dict[str, List[str] | None] = invoke("deckNames")
+    deck_names: List[str] | None = deck_result.get("result")
+    if deck_names is None:
+        click.echo("No decks found")
+        return
+    is_selected = False
+    selected_decks = set()
+    while not is_selected:
+        click.echo("Please select a deck:")
+        for index, deck_name in enumerate(deck_names):
+            click.echo(f"{index + 1}. {deck_name}")
+        click.echo("Enter X to finish selection")
+        selected_option = click.prompt("")
+        if selected_option == "X":
+            is_selected = True
+            continue
+        selected_option = int(selected_option)
+        if selected_option > len(deck_names) or selected_option < 1:
+            click.echo("Invalid deck number")
+            continue
+        deck_name: str = deck_names[selected_option - 1]
+        click.echo(f"Selected deck: {deck_name}")
+        is_correct = click.confirm("Is this correct?")
+        if is_correct:
+            selected_decks.add(deck_name)
+    click.echo(selected_decks)

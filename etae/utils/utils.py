@@ -6,13 +6,13 @@ import os
 SYSTEM = Literal["Windows", "Darwin", "Linux"]
 
 
-def load_config_file(path: str) -> dict[str, Any]:
+def load_config_file(path: str) -> dict[str, Any] | None:
     try:
         config: dict[str, Any] = toml.load(path)
         return config
     except FileNotFoundError:
         print("File not found, please make sure your config file actually exists")
-        return {}
+        return None
 
 
 def get_config_file(system: SYSTEM) -> dict[str, Any] | str:
