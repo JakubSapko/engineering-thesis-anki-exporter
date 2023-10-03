@@ -5,9 +5,11 @@ from etae.utils.message_utils import format_config_message
 from etae.utils.utils import get_config_file
 
 
-@click.group()
-def cli():
-    pass
+@click.group(invoke_without_command=True)
+@click.pass_context
+def cli(ctx):
+    if ctx == "get":
+        print("elo")
 
 
 @cli.command()
@@ -16,7 +18,7 @@ def cli():
     help="Show your current config. Use --anon to anonymize your password",
     is_flag=True,
 )
-def config(anon: bool):
+def get_config(anon: bool):
     current_system: str = platform.system()
     config = get_config_file(current_system)
     formatted_message: str = format_config_message(config, anon)
@@ -26,5 +28,5 @@ def config(anon: bool):
 
 @cli.command()
 @click.argument("val")
-def set_bar(val):
+def set_config(val):
     click.echo("Dropped the database")
