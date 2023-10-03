@@ -1,7 +1,8 @@
 import click
 import platform
+from etae.utils.message_utils import format_config_message
 
-from etae.utils.utils import find_config_file
+from etae.utils.utils import get_config_file
 
 
 @click.group()
@@ -17,10 +18,10 @@ def cli():
 )
 def config(anon: bool):
     current_system: str = platform.system()
-    print(current_system)
-    config = find_config_file(current_system)
-    if anon:
-        click.echo("Your config is: ...")
+    config = get_config_file(current_system)
+    formatted_message: str = format_config_message(config, anon)
+    click.echo("Current config:")
+    click.echo(formatted_message)
 
 
 @cli.command()
