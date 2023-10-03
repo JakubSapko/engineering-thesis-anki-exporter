@@ -14,10 +14,11 @@ def cli(ctx):
     click.echo("Welcome to etae!")
 
 
-@cli.command()
+@cli.command(
+    help="Show your current config. Use --anon to anonymize your password",
+)
 @click.option(
     "--anon",
-    help="Show your current config. Use --anon to anonymize your password",
     is_flag=True,
 )
 @click.pass_context
@@ -29,7 +30,7 @@ def get_config(ctx, anon: bool):
     click.echo(formatted_message)
 
 
-@cli.command()
+@cli.command(help="Set your config.")
 @click.pass_context
 def set_config(ctx):
     click.echo("Welcome to config setup!")
