@@ -1,4 +1,7 @@
 import click
+import platform
+
+from etae.utils.utils import find_config_file
 
 
 @click.group()
@@ -13,9 +16,11 @@ def cli():
     is_flag=True,
 )
 def config(anon: bool):
+    current_system: str = platform.system()
+    print(current_system)
+    config = find_config_file(current_system)
     if anon:
         click.echo("Your config is: ...")
-    click.echo("Initialized the database")
 
 
 @cli.command()
