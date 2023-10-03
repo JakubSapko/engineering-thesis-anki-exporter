@@ -15,7 +15,7 @@ def load_config_file(path: str) -> dict[str, Any]:
         return {}
 
 
-def get_config_file(system: SYSTEM) -> str:
+def get_config_file(system: SYSTEM) -> dict[str, Any] | str:
     unix_home_path: Path = Path.home()
     match system:
         case "Windows":

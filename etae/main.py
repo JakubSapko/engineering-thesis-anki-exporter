@@ -8,8 +8,7 @@ from etae.utils.utils import get_config_file
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx):
-    if ctx == "get":
-        print("elo")
+    pass
 
 
 @cli.command()

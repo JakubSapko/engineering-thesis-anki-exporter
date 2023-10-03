@@ -1,7 +1,7 @@
 from typing import Any
 
 
-def replace_characters(s: str):
+def replace_characters(s: str) -> str:
     return s[0] + "*" * (len(s) - 2) + s[-1]
 
 
