@@ -18,7 +18,11 @@ def send_data_to_etae(
     if user_login is None or user_password is None:
         print("Login or password not found")
         return
-    requests.post(
+    response = requests.post(
         API_URL,
         json={"login": user_login, "password": user_password, "cards": cards_info},
     )
+    if response.status_code == 200:
+        print("Data sent successfully!")
+        return
+    print("Something went wrong, sorry!")
