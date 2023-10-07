@@ -1,9 +1,11 @@
 from typing import List
+
 import click
 import platform
-from etae.utils.anki_utils import invoke
-from etae.utils.message_utils import format_config_message
 
+from etae.utils.anki_utils import get_decks_data, invoke
+from etae.utils.api_utils import send_data_to_etae
+from etae.utils.message_utils import format_config_message
 from etae.utils.utils import get_config_file, set_config_file
 
 
@@ -69,7 +71,7 @@ def send_anki_data(ctx):
             click.echo(f"{index + 1}. {deck_name}")
         click.echo("Enter X to finish selection")
         selected_option = click.prompt("")
-        if selected_option == "X":
+        if selected_option in ["X", "x"]:
             is_selected = True
             continue
         selected_option = int(selected_option)
@@ -81,4 +83,5 @@ def send_anki_data(ctx):
         is_correct = click.confirm("Is this correct?")
         if is_correct:
             selected_decks.add(deck_name)
-    click.echo(selected_decks)
+    cards_info = get_decks_data(selected_decks)
+    _ = send_data_to_etae(config, cards_info)
