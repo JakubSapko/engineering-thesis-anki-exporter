@@ -1,9 +1,11 @@
 import requests
+import pandas as pd
 from typing import Any
 
 from etae.utils.card import Card
+from etae.utils.utils import list_of_dicts_to_dataframe_format
 
-API_URL = "http://127.0.0.1:8000/"
+API_URL = "http://127.0.0.1:8000/api"
 
 
 def send_data_to_etae(
@@ -18,11 +20,17 @@ def send_data_to_etae(
     if user_login is None or user_password is None:
         print("Login or password not found")
         return
-    response = requests.post(
-        API_URL,
-        json={"login": user_login, "password": user_password, "cards": cards_info},
+    parsed_data = list_of_dicts_to_dataframe_format(cards_info["Clannad"]["result"])
+    output = pd.DataFrame(parsed_data)
+    fitted_output = output.drop(
+        columns=["fieldOrder", "question", "answer", "modelName", "css"]
     )
-    if response.status_code == 200:
-        print("Data sent successfully!")
-        return
-    print("Something went wrong, sorry!")
+    fitted_output.to_csv("output.csv", index=False)
+    # response = requests.post(
+    #     API_URL,
+    #     json={"login": user_login, "password": user_password, "cards": cards_info},
+    # )
+    # if response.status_code == 200:
+    #     print("Data sent successfully!")
+    #     return
+    # print(f"HTTP error occured: {response.status_code}: {response.text}")
