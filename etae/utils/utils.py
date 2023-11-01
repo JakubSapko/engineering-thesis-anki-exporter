@@ -1,3 +1,4 @@
+import json
 import re
 from typing import Any, Literal, Optional
 from pathlib import Path
@@ -85,7 +86,7 @@ def extract_definition_and_dictionary_form_from_fields(
 ) -> tuple[Optional[str], list[str]]:
     LIST_ITEM_PATTERN = r"<li>(.*?)</li>"
     DICTIONARY_FORM_PATTERN = (
-        r'"wordDictionaryForm": {"value": "<span[^>]*>(.*?)</span>"'
+        r"\'wordDictionaryForm\': {\'value\': \'<span[^>]*>(.*?)</span>\'"
     )
     all_definitions = re.findall(LIST_ITEM_PATTERN, cell)
     dictionary_form_match = re.search(DICTIONARY_FORM_PATTERN, cell)

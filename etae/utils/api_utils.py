@@ -3,7 +3,10 @@ import pandas as pd
 from typing import Any
 
 from etae.utils.card import Card
-from etae.utils.utils import list_of_dicts_to_dataframe_format
+from etae.utils.utils import (
+    extract_definition_and_dictionary_form_from_fields,
+    list_of_dicts_to_dataframe_format,
+)
 
 API_URL = "http://127.0.0.1:8000/api"
 
@@ -20,12 +23,20 @@ def send_data_to_etae(
     if user_login is None or user_password is None:
         print("Login or password not found")
         return
-    parsed_data = list_of_dicts_to_dataframe_format(cards_info["Clannad"]["result"])
+    key = list(cards_info.keys())
+    parsed_data = list_of_dicts_to_dataframe_format(cards_info[key[0]]["result"])
     output = pd.DataFrame(parsed_data)
     fitted_output = output.drop(
         columns=["fieldOrder", "question", "answer", "modelName", "css"]
     )
-    fitted_output.to_csv("output.csv", index=False)
+    fitted_output["raw_fields"] = fitted_output["fields"]
+    fitted_output["fields"] = (
+        fitted_output["fields"]
+        .astype(str)
+        .apply(extract_definition_and_dictionary_form_from_fields)
+    )
+    # fitted_output["fields"].apply(extract_definition_and_dictionary_form_from_fields)
+    fitted_output.to_csv("output2.csv", index=False)
     # response = requests.post(
     #     API_URL,
     #     json={"login": user_login, "password": user_password, "cards": cards_info},
