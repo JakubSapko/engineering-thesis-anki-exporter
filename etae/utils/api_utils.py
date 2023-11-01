@@ -35,6 +35,10 @@ def send_data_to_etae(
         .astype(str)
         .apply(extract_definition_and_dictionary_form_from_fields)
     )
+    fitted_output[["dictionary_form", "definitions"]] = fitted_output["fields"].apply(
+        pd.Series
+    )
+    fitted_output.dropna(subset=["dictionary_form"], inplace=True)
     # fitted_output["fields"].apply(extract_definition_and_dictionary_form_from_fields)
     fitted_output.to_csv("output2.csv", index=False)
     # response = requests.post(
