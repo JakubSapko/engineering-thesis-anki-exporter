@@ -1,3 +1,4 @@
+from datetime import datetime
 import requests
 import pandas as pd
 from typing import Any
@@ -39,13 +40,14 @@ def send_data_to_etae(
         pd.Series
     )
     fitted_output.dropna(subset=["dictionary_form"], inplace=True)
-    # fitted_output["fields"].apply(extract_definition_and_dictionary_form_from_fields)
-    fitted_output.to_csv("output2.csv", index=False)
-    # response = requests.post(
-    #     API_URL,
-    #     json={"login": user_login, "password": user_password, "cards": cards_info},
-    # )
-    # if response.status_code == 200:
-    #     print("Data sent successfully!")
-    #     return
-    # print(f"HTTP error occured: {response.status_code}: {response.text}")
+    current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    fitted_output = fitted_output.drop(columns=["fields", "raw_fields"])
+    fitted_output.to_csv(f"{current_datetime}_output.csv", index=False)
+    response = requests.post(
+        API_URL,
+        json={"login": user_login, "password": user_password, "cards": cards_info},
+    )
+    if response.status_code == 200:
+        print("Data sent successfully!")
+        return
+    print(f"HTTP error occured: {response.status_code}: {response.text}")
